@@ -15,29 +15,18 @@
 
   If you want to analyse the output then use the redirection operator to send
   output to a file that you can view using an editor or the less utility:
-    ./CrackAZ99 > output.txt
+    ./2039276_Task2_C_3 > output.txt
 
-  Dr Kevan Buckley, University of Wolverhampton, 2018 Modified by Dr. Ali Safaa 2019
+  Sonam Wangdi Sherpa, UID:2039376
 ******************************************************************************/
 
 int count=0;     // A counter used to track the number of combinations explored so far
 
-/**
- Required by lack of standard function in C.   
-*/
 
 void substr(char *dest, char *src, int start, int length){
   memcpy(dest, src + start, length);
   *(dest + length) = '\0';
 }
-
-/**
- This function can crack the kind of password explained above. All combinations
- that are tried are displayed and when the password is found, #, is put at the 
- start of the line. Note that one of the most time consuming operations that 
- it performs is the output of intermediate results, so performance experiments 
- for this kind of program should not include this. i.e. comment out the printfs.
-*/
 
 void crack(char *salt_and_encrypted){
   int a,b,c,d;     // Loop counters
@@ -56,7 +45,6 @@ void crack(char *salt_and_encrypted){
           count++;
           if(strcmp(salt_and_encrypted, enc) == 0){
 	    printf("#%-8d%s %s\n", count, plain, enc);
-		//return;	//uncomment this line if you want to speed-up the running time, program will find you the cracked password only without exploring all possibilites
           } 
         } 
       }
@@ -88,7 +76,7 @@ int main(int argc, char *argv[]){
 
   clock_gettime(CLOCK_MONOTONIC, &start);
  
-  crack("$6$AS$kxt4Rj8.ceicJCG.Ug3KHfo8QOb6MWfTFzGxW.U8iGYAAWfJxyUqS2Q3weNH2fWRnTc8tPVvlfJUtB9M9BQXf.");		//Copy and Paste your ecrypted password here using EncryptShA512 program
+  crack("$6$AS$kxt4Rj8.ceicJCG.Ug3KHfo8QOb6MWfTFzGxW.U8iGYAAWfJxyUqS2Q3weNH2fWRnTc8tPVvlfJUtB9M9BQXf.");
   printf("%d solutions explored\n", count);
 
   clock_gettime(CLOCK_MONOTONIC, &finish);

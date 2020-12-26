@@ -13,9 +13,7 @@
   To encrypt the password "pass":
     ./EncryptSHA512 pass
     
-  It doesn't do any checking, just does the job or fails ungracefully.
-
-  Dr Kevan Buckley, University of Wolverhampton, 2017. Modified by Dr. Ali Safaa 2019
+  Sonam Wangdi Sherpa, UID:2039376
 ******************************************************************************/
 
 #define SALT "$6$AS$"

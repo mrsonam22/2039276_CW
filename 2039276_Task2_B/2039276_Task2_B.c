@@ -5,11 +5,13 @@
 #include <time.h>
 
 /*
-to compile :
-gcc -o 2039276_Task2_B 2039276_Task2_B.c -lpthread
+	Compile this program using:	
+	cc -o 2039276_Task2_B 2039276_Task2_B.c -lpthread
 
-to run:
-./2039276_Task2_B
+	Run this program using:
+	./2039276_Task2_B
+	
+	 Sonam Wangdi Sherpa, UID: 2039276
 
 */
 #define MAT_SIZE 1024
@@ -19,28 +21,25 @@ int matrix1[MAT_SIZE][MAT_SIZE]; //First Matrix
 int matrix2[MAT_SIZE][MAT_SIZE]; //Second Matrix
 int result [MAT_SIZE][MAT_SIZE]; //Multiplied Matrix
 
+//Type Defining For Passing Function Argumnents
+typedef struct parameters {
+    int x,y;
+}args;
+
 //Function For Calculate Each Element in Result Matrix Used By Threads - - -//
-void* thread_Multiply_Matrix(void* para){
+void* thread_Multiply_Matrix(void* arg){
     
-    int iCount,jCount,kCount;
-    for(iCount=1;iCount<i;iCount=iCount+2)
-        {
-            for(jCount=0;jCount<k;jCount++)
-            {
-                for(kCount=0;kCount<j;kCount++)
-                {                    
-                    result[iCount][jCount]+=matrix1[iCount][kCount] * matrix2[kCount][jCount];
-                }
-            }
-        }
-        
+    args* p = arg;
+    
+    //Calculating Each Element in Result Matrix Using Passed Arguments
+    for(int a=0;a<j;a++){
+        result[p->x][p->y] += matrix1[p->x][a]*matrix2[a][p->y];
+    }
     sleep(3);
     
     //End Of Thread
     pthread_exit(0);
 }
-
-void *thread_Multiply_Matrix(void *);
 
 
 int main(){
@@ -104,22 +103,58 @@ int main(){
     
     clock_gettime(CLOCK_MONOTONIC, &start);
 
+    //Multiply Matrices Using Threads - - - - - - - - - - - - - - - - - - - -//
+    
     //Defining Threads
     pthread_t thread[MAX_THREADS];
-    pthread_create(&thread,NULL,thread_Multiply_Matrix,NULL);  
     
-    pthread_join(thread,NULL);
+    //Counter For Thread Index
+    int thread_number = 0;
+    
+    //Defining p For Passing Parameters To Function As Struct
+    args p[i*k];
+    
+    for(int x=0;x<i;x++){
+        for(int y=0;y<k;y++){
+            
+            //Initializing Parameters For Passing To Function
+            p[thread_number].x=x;
+            p[thread_number].y=y;
+            
+            //Status For Checking Errors
+            int status;
+            
+            //Create Specific Thread For Each Element In Result Matrix
+            status = pthread_create(&thread[thread_number], NULL, thread_Multiply_Matrix, (void *) &p[thread_number]);
+            
+            //Check For Error
+            if(status!=0){
+                printf("Error In Threads");
+                exit(0);
+            }
+            
+            thread_number++;
+        }
+    }
+    
+    
+    //Wait For All Threads Done - - - - - - - - - - - - - - - - - - - - - - //
+    
+    for(int z=0;z<(i*k);z++)
+        pthread_join(thread[z],NULL );
     
     
     //Print Multiplied Matrix (Result) - - - - - - - - - - - - - - - - - - -//
     
-    // printf(" --- Multiplied Matrix ---\n\n");
-    // for(int x=0;x<i;x++){
-    //     for(int y=0;y<k;y++){
-    //         printf("%5d",result[x][y]);
-    //     }
-    //     printf("\n\n");
-    // }
+    printf(" --- Multiplied Matrix ---\n\n");
+    for(int x=0;x<i;x++){
+        for(int y=0;y<k;y++){
+            printf("%5d",result[x][y]);
+        }
+        printf("\n\n");
+    }
+    
+    printf(" ---> Used Threads : %d \n\n",thread_number);
     
     
     clock_gettime(CLOCK_MONOTONIC, &finish);
@@ -142,4 +177,4 @@ int time_difference(struct timespec *start,
   } 
   *difference = ds * 1000000000 + dn;
   return !(*difference > 0);
-}
+}	

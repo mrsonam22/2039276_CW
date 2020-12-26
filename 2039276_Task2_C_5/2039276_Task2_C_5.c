@@ -16,9 +16,9 @@
   If you want to analyse the results then use the redirection operator to send
   output to a file that you can view using an editor or the less utility:
 
-    ./thread_rukesh1e > threadrukesh_results.txt
+    ./2039276_Task2_C_5 > output.txt
 
-  Dr Kevan Buckley, University of Wolverhampton, 2018
+  Sonam Wangdi Sherpa, UID:2039376
 ******************************************************************************/
 
 

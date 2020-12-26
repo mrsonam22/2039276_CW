@@ -3,12 +3,13 @@
 #include <time.h>
 
 /*
-to compile :
-nvcc -o 2039276_Task3_A 2039276_Task3_A.c 
+	to compile :
+	nvcc -o 2039276_Task3_A 2039276_Task3_A.cu 
 
-to run:
-./2039276_Task3_A
+	to run:
+	./2039276_Task3_A
 
+	Sonam Wangdi Sherpa, UID: 2039276
 */
 
 
@@ -46,21 +47,21 @@ __device__ char* CudaCrypt(char* rawPassword){
 	return newPassword; //Returns encrypted password
 }
 
-__device__ int compareTwoString(char* stringOne, char* stringTwo){
+__device__ int isMatched(char* passA, char* passB){
 	
-    while(*stringOne)
+    while(*passA)
     {
-        //Comparing the two strings
-        if (*stringOne != *stringTwo)
+        
+        if (*passA != *passB)
             break;
  
         //Changing Pointer location
-        stringOne++;
-        stringTwo++;
+        passA++;
+        passB++;
     }
  
     // Returing the 0 if the two strings matches 
-    return *(const unsigned char*)stringOne - *(const unsigned char*)stringTwo;
+    return *(const unsigned char*)passA - *(const unsigned char*)passB;
 }
 
 __global__ void crack(char * alphabet, char * numbers){
@@ -78,7 +79,7 @@ __global__ void crack(char * alphabet, char * numbers){
 	char *encPassword = CudaCrypt(password);
 	
 	//Comparing encrypted genRawPass with encPassword
-	if(compareTwoString(CudaCrypt(genRawPass),encPassword) == 0){
+	if(isMatched(CudaCrypt(genRawPass),encPassword) == 0){
 		printf("Your password is cracked : %s = %s\n", genRawPass, password);
 	}
 }
@@ -131,6 +132,7 @@ int main(int argc, char ** argv){
 	//Print the duration taken
 	printf("Time elapsed was %lldns or %0.9lfs\n", time_elapsed,
 	(time_elapsed/1.0e9)); 
+	
 	return 0;
 }
 

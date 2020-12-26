@@ -10,7 +10,6 @@ nvcc 2039276_Task3_B.cu lodepng.cpp -o 2039276_Task3_B
 
 to run:
 ./2039276_Task3_B
-
 */
 
 
@@ -135,13 +134,33 @@ __global__ void square(unsigned char * gpu_imageOutput, unsigned char * gpu_imag
 	setBlue(gpu_imageOutput, row, col, newBlue);
 }
 
+int time_difference(struct timespec *start, struct timespec *finish, long long int *difference)
+ {
+	  long long int ds =  finish->tv_sec - start->tv_sec; 
+	  long long int dn =  finish->tv_nsec - start->tv_nsec; 
+
+	  if(dn < 0 ) 
+	  {
+	    ds--;
+	    dn += 1000000000; 
+          } 
+
+	  *difference = ds * 1000000000 + dn;
+	  return !(*difference > 0);
+}
+
 int main(int argc, char **argv){
+
+	struct timespec start, finish;
+	long long int time_elapsed;
 
 	unsigned char *image;
 	unsigned int width;
 	unsigned int height;
 	const char* filename = "hck.png";
 	const char* newFileName = "filtered.png";
+	
+	clock_gettime(CLOCK_MONOTONIC, &start);//Start monitoring the duration 
 
 	//Decoding Image
 	lodepng_decode32_file(&image, &width, &height, filename);
@@ -183,7 +202,19 @@ int main(int argc, char **argv){
 
 	cudaFree(d_in);
 	cudaFree(d_out);
+	clock_gettime(CLOCK_MONOTONIC, &finish); //End the duration of the program
+	
+	//Calculate difference
+	time_difference(&start, &finish, &time_elapsed);
+	
+
+	//Print the duration taken
+	printf("Time elapsed was %lldns or %0.9lfs\n", time_elapsed,
+	(time_elapsed/1.0e9)); 
 
 	return 0;
 }
+
+
+
 
